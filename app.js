@@ -62,8 +62,13 @@ app.post("/", function (req, res) {
   });
 
   if (listName === "Today") {
-    item.save();
-    res.redirect("/");
+    item.save()
+      .then(function () {
+        res.redirect("/");
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
   } else {
     List.findOne({ name: listName })
       .then(function (foundList) {
@@ -74,11 +79,14 @@ app.post("/", function (req, res) {
 
         foundList.items.push(item);
 
-        foundList.save();
-
-        console.log("Saved successfully");
-
-        res.redirect("/" + listName);
+        foundList.save()
+          .then(function () {
+            console.log("Saved successfully");
+            res.redirect("/" + listName);
+          })
+          .catch(function (err) {
+            console.log(err);
+          });
       })
       .catch(function (err) {
         console.log(err);
@@ -122,9 +130,14 @@ app.get("/:customListName", function (req, res) {
           name: customListName,
           items: defaultItems
         });
-        list.save();
-        console.log("saved");
-        res.redirect("/" + customListName);
+        list.save()
+          .then(function () {
+            console.log("saved");
+            res.redirect("/" + customListName);
+          })
+          .catch(function (err) {
+            console.log(err);
+          });
       }
       else {
         //show an existing list
